@@ -73,7 +73,8 @@ export const getImgPath = {
 			let suffix;
 			if (!path) {
 			  //这里设置一个默认图片
-				return '//waimai-api.microapp.store/file/getImgStream?fileName=16a6d42c05334033.png'
+				// return '//waimai-api.microapp.store/file/getImgStream?fileName=16a6d42c05334033.png'
+        return '//https://u.cubeupload.com/CaptainPotassium/2A363A2C21614C389569.jpeg'
 			}
 			if (path.indexOf('jpeg') !== -1) {
 				suffix = '.jpeg'

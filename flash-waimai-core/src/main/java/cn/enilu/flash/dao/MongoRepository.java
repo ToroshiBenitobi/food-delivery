@@ -12,6 +12,7 @@ import org.springframework.data.geo.GeoResults;
 import org.springframework.data.geo.Metrics;
 import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.NearQuery;
 import org.springframework.data.mongodb.core.query.Query;
@@ -50,14 +51,17 @@ public class MongoRepository {
     public void delete(String collectionName, Map<String, Object> keyValues) {
         mongoTemplate.remove(Query.query(criteria(keyValues)), collectionName);
     }
-    public void clear(Class klass){
+
+    public void clear(Class klass) {
         mongoTemplate.dropCollection(klass);
         mongoTemplate.createCollection(klass);
     }
-    public void clear(String collectionName){
+
+    public void clear(String collectionName) {
         mongoTemplate.dropCollection(collectionName);
         mongoTemplate.createCollection(collectionName);
     }
+
     public void update(BaseMongoEntity entity) {
         mongoTemplate.save(entity);
     }
@@ -89,13 +93,15 @@ public class MongoRepository {
     public <T, P> T findOne(Class<T> klass, P key) {
         return findOne(klass, "id", key);
     }
-    public <T> T findOne(Class<T> klass, Map<String,Object> params) {
+
+    public <T> T findOne(Class<T> klass, Map<String, Object> params) {
         Criteria criteria = criteria(params);
         if (criteria != null) {
             return mongoTemplate.findOne(Query.query(criteria), klass);
         }
         return null;
     }
+
     public <T> T findOne(Class<T> klass, String key, Object value) {
         return mongoTemplate.findOne(Query.query(Criteria.where(key).is(value)), klass);
     }
@@ -178,29 +184,37 @@ public class MongoRepository {
 
     /**
      * 查询指定位置附近的商家
+     *
      * @param x
      * @param y
      * @param collectionName
      * @param params
-     * @param miles 公里数
+     * @param miles          公里数
      * @return
      */
-    public GeoResults<Map> near(double x, double y, String collectionName, Map<String, Object> params,Integer miles) {
-        Point location = new Point(x, y);
-        NearQuery nearQuery = NearQuery.near(location).maxDistance(new Distance(miles, Metrics.MILES));
-        if (params != null && !params.isEmpty()) {
-            Query query = Query.query(criteria(params));
-            nearQuery.query(query);
-        }
+    public GeoResults<Map> near(double x, double y, String collectionName, Map<String, Object> params, Integer miles) {
         try {
+            Point location = new Point(x, y);
+            NearQuery nearQuery = NearQuery.near(location).maxDistance(new Distance(miles, Metrics.MILES));
+            if (params != null && !params.isEmpty()) {
+
+                Query query = Query.query(criteria(params));
+                nearQuery.query(query);
+            }
+
+//            GeoResults<Map> results = mongoTemplate.query(Map.class).as(Map.class).near(nearQuery).all();
+//                    .near(nearQuery)
+//            return results;
             return mongoTemplate.geoNear(nearQuery, Map.class, collectionName);
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
         return null;
     }
+
     /**
      * 查询指定位置附近的商家，默认查询十公里范围内
+     *
      * @param x
      * @param y
      * @param collectionName
@@ -208,7 +222,7 @@ public class MongoRepository {
      * @return
      */
     public GeoResults<Map> near(double x, double y, String collectionName, Map<String, Object> params) {
-        return near(x,y,collectionName,params,50);
+        return near(x, y, collectionName, params, 50);
     }
 
     public long count(Class klass) {

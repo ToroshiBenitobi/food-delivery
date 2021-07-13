@@ -25,7 +25,7 @@ public class ShopVo extends Shop {
 
 
 //name: 小梦鲜花
-//        address: 上海市杨浦区昆明路739号
+//        address: 湖南省长沙市天心区韶山南路22号
 //        description: 店铺简洁
 //        phone: 15029292929
 //        promotion_info: 店铺标语

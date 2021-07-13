@@ -10,7 +10,7 @@
         <p><span class="title"><i class="el-icon-phone"></i>&nbsp;&nbsp;{{ user.phone }}</span></p>
         <p><span class="title"><i class="el-icon-user"></i>&nbsp;&nbsp;{{ user.name }}</span></p>
         <!--<p><span class="title"><i class="el-icon-open"></i>&nbsp;&nbsp;{{ user.status == '1'?'启用' : '禁用' }}</span></p>-->
-        <!--<p><span class="title"><i class="el-icon-location-outline"></i>&nbsp;&nbsp;上海市浦东大道290弄</span></p>-->
+        <!--<p><span class="title"><i class="el-icon-location-outline"></i>&nbsp;&nbsp;湖南省长沙市天心区韶山南路22号</span></p>-->
       </el-col>
       <el-col :span="18" style="padding-left:10px;">
         <el-tabs v-model="activeName" @tab-click="handleClick">

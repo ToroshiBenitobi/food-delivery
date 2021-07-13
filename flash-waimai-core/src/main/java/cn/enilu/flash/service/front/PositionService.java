@@ -106,11 +106,13 @@ public class PositionService {
         params.put("key", appConfiguration.getTencentKey());
         try {
             params.put("keyword", URLEncoder.encode(keyword,"utf-8"));
+            logger.info("0000000000");
         } catch (UnsupportedEncodingException e) {
            logger.error(e.getMessage(),e);
         }
         try {
             params.put("boundary", "region(" + URLEncoder.encode(cityName,"utf-8") + ",0)");
+            logger.info("11111111111");
         } catch (UnsupportedEncodingException e) {
             logger.error(e.getMessage(),e);
         }
@@ -118,9 +120,12 @@ public class PositionService {
         try {
             String str = HttpClients.get(appConfiguration.getQqApiUrl() + "place/v1/search", params);
             Map result = (Map) Json.fromJson(str);
+            logger.info(str);
             if (Integer.valueOf(result.get("status").toString()).intValue() == 0) {
+                logger.info("HAVE");
                 return (List) result.get("data");
             }
+            logger.info("222222222222");
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }

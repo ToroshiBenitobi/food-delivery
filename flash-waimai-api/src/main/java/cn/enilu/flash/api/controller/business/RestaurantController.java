@@ -37,6 +37,7 @@ public class RestaurantController extends BaseController {
         System.out.println(Json.toJson(params));
         GeoResults<Map> geoResults = mongoRepository.near(Double.valueOf(longitude), Double.valueOf(latitude),
                 "shops", params);
+        System.out.println(geoResults.getContent().size());
         List<GeoResult<Map>> geoResultList = geoResults.getContent();
         List<Map> list = Lists.newArrayList();
         for (int i = 0; i < geoResultList.size(); i++) {
