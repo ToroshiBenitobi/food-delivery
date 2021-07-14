@@ -202,6 +202,7 @@ export default {
       let cartFoodNum = 0;
       this.totalPrice = 0;
       this.cartFoodList = [];
+      this.cartList[this.shopId] = this.shopCart
       this.menuList.forEach((item, index) => {
         console.log('1',item.foods[0])
         if (this.shopCart&&this.shopCart[item.foods[0].category_id]) {

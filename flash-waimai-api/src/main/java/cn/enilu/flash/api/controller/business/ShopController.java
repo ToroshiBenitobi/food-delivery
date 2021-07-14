@@ -106,7 +106,7 @@ public class ShopController extends BaseController {
         if (StringUtils.isNotEmpty(name)) {
             params.put("name", name);
         }
-        params.put("disabled",0);
+//        params.put("disabled",0);
 
         if (StringUtils.isEmpty(latitude) || "undefined".equals(latitude)
                 || StringUtils.isEmpty(longitude) || "undefined".equals(longitude)) {
@@ -115,13 +115,20 @@ public class ShopController extends BaseController {
         } else {
             //查询指定经纬度范围内的餐厅
             if (categoryIds != null && categoryIds.length > 0) {
-                Map map = (Map) mongoRepository.findOne(categoryIds[0], "categories");
+                System.out.println(categoryIds[0]);
+                Map map = (Map) mongoRepository.findSubOne(categoryIds[0], "categories");
                 if (map != null) {
+                    System.out.println("map != null");
                     params.put("category", map.get("name").toString());
                 }
             }
             GeoResults<Map> geoResults = mongoRepository.near(Double.valueOf(longitude), Double.valueOf(latitude), "shops", params);
             Page<Map> page = new PageFactory<Map>().defaultPage();
+            for (Map.Entry<String, Object> entry : params.entrySet()) {
+                System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue().toString());
+
+            }
+
             if (geoResults != null) {
                 List<GeoResult<Map>> geoResultList = geoResults.getContent();
                 List list = Lists.newArrayList();

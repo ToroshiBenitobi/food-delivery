@@ -82,7 +82,7 @@ public class AccountController extends BaseController{
 
                 Shop shop = mongoRepository.findOne(Shop.class, Maps.newHashMap("name", userName, "password", password));
                 if(shop==null){
-                    return Rets.failure("没有改账号");
+                    return Rets.failure("没有该账号");
                 }
                 if(shop.getDisabled() == 1){
                     return Rets.failure("该商户已停用");

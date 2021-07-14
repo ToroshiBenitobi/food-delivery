@@ -12,17 +12,14 @@ import org.springframework.data.geo.GeoResults;
 import org.springframework.data.geo.Metrics;
 import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.NearQuery;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Created on 2017/12/29 0029.
@@ -110,6 +107,22 @@ public class MongoRepository {
         return mongoTemplate.findOne(Query.query(Criteria.where("id").is(id)), Map.class, collectionName);
     }
 
+    // TODO: 西暦2021年7月13日(013)  
+    public Object findSubOne(Long id, String collectionName) {
+        Map map = null;
+        Map category = mongoTemplate.findOne(Query.query(Criteria.where("sub_categories.id").is(id)), Map.class, collectionName);
+        ArrayList arrayList = ((ArrayList) category.get("sub_categories"));
+        for (Object item :
+                arrayList) {
+            System.out.println(((LinkedHashMap) item).get("id"));
+            if (((Integer) ((LinkedHashMap) item).get("id")) == id.intValue()) {
+                map = (Map) item;
+                map.put("name", category.get("name") + "/" + map.get("name"));
+            }
+        }
+        return map;
+    }
+
     public Map findOne(String collectionName, Object... extraKeyValues) {
         Criteria criteria = criteria(extraKeyValues);
         if (Objects.isNull(criteria)) {
@@ -189,23 +202,28 @@ public class MongoRepository {
      * @param y
      * @param collectionName
      * @param params
-     * @param miles          公里数
+     * @param kilometers     公里数
      * @return
      */
-    public GeoResults<Map> near(double x, double y, String collectionName, Map<String, Object> params, Integer miles) {
+    public GeoResults<Map> near(double x, double y, String collectionName, Map<String, Object> params, Integer
+            kilometers) {
         try {
             Point location = new Point(x, y);
-            NearQuery nearQuery = NearQuery.near(location).maxDistance(new Distance(miles, Metrics.MILES));
+            NearQuery nearQuery = NearQuery.near(location).maxDistance(new Distance(kilometers, Metrics.KILOMETERS)).minDistance(new Distance(0, Metrics.KILOMETERS));
             if (params != null && !params.isEmpty()) {
-
                 Query query = Query.query(criteria(params));
+                System.out.println(criteria(params).toString());
                 nearQuery.query(query);
             }
-
 //            GeoResults<Map> results = mongoTemplate.query(Map.class).as(Map.class).near(nearQuery).all();
 //                    .near(nearQuery)
 //            return results;
-            return mongoTemplate.geoNear(nearQuery, Map.class, collectionName);
+            GeoResults<Map> mapGeoResults = mongoTemplate.geoNear(nearQuery, Map.class, collectionName);
+            System.out.println(nearQuery.getMaxDistance());
+            System.out.println(nearQuery.getMinDistance());
+            System.out.println(nearQuery.toString());
+            System.out.println(nearQuery.getMetric());
+            return mapGeoResults;
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -222,7 +240,7 @@ public class MongoRepository {
      * @return
      */
     public GeoResults<Map> near(double x, double y, String collectionName, Map<String, Object> params) {
-        return near(x, y, collectionName, params, 50);
+        return near(x, y, collectionName, params, 500000);
     }
 
     public long count(Class klass) {

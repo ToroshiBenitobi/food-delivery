@@ -35,6 +35,9 @@ public class RestaurantController extends BaseController {
         String latitude = geoHashArr[0];
         Map<String, Object> params = Maps.newHashMap("name", keyWord);
         System.out.println(Json.toJson(params));
+        System.out.println(longitude);
+        System.out.println(latitude);
+        System.out.println(params);
         GeoResults<Map> geoResults = mongoRepository.near(Double.valueOf(longitude), Double.valueOf(latitude),
                 "shops", params);
         System.out.println(geoResults.getContent().size());
@@ -49,4 +52,29 @@ public class RestaurantController extends BaseController {
         }
         return Rets.success(list);
     }
+
+//    @RequestMapping(value = "/shopping/restaurants", method = RequestMethod.GET)
+//    public Object shopping(@RequestParam("geohash") String geoHash, @RequestParam("keyword") String keyWord) {
+//        String[] geoHashArr = geoHash.split(",");
+//        String longitude = geoHashArr[1];
+//        String latitude = geoHashArr[0];
+//        Map<String, Object> params = Maps.newHashMap("name", "兰兰");
+//        System.out.println(Json.toJson(params));
+//        System.out.println(longitude);
+//        System.out.println(latitude);
+//        System.out.println(params);
+//        GeoResults<Map> geoResults = mongoRepository.near(Double.valueOf(longitude), Double.valueOf(latitude),
+//                "shops", params);
+//        System.out.println(geoResults.getContent().size());
+//        List<GeoResult<Map>> geoResultList = geoResults.getContent();
+//        List<Map> list = Lists.newArrayList();
+//        for (int i = 0; i < geoResultList.size(); i++) {
+//            Map map = geoResultList.get(i).getContent();
+//            Distance distance = new Distance(Double.valueOf(longitude), Double.valueOf(latitude),
+//                    Double.valueOf(map.get("longitude").toString()), Double.valueOf(map.get("latitude").toString()));
+//            map.put("distance", distance.getDistance());
+//            list.add(map);
+//        }
+//        return Rets.success(list);
+//    }
 }

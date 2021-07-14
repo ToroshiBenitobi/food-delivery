@@ -150,7 +150,15 @@ public class FileController extends BaseController {
             out.write(b);
             out.flush();
         } catch (Exception e) {
-            logger.error("文件不存在",e.getMessage());
+            if(idFile!=null) {
+
+                logger.error("文件不存在 " + idFile);
+            }else if(StringUtils.isNotEmpty(fileName)){
+                logger.error("文件不存在 " + fileName);
+//                logger.error("文件不存在" + "image/"+fileInfo.getRealFileName().split("\\.")[1],e.getMessage());
+            } else {
+                logger.error("文件无名字");
+            }
         } finally {
             if (fis != null) {
                 try {
