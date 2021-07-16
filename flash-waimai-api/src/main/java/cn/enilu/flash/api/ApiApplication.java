@@ -22,7 +22,7 @@ import javax.sql.DataSource;
  *@Author enilu
  * @version 2018/9/11 0011
  */
-//@EnableCaching
+@EnableCaching
 @SpringBootApplication
 @ComponentScan(basePackages = "cn.enilu.flash")
 @EntityScan(basePackages="cn.enilu.flash.bean.entity")

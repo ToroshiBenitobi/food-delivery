@@ -99,7 +99,7 @@ public class ShopController extends BaseController {
     public Object restaurants(@RequestParam(value = "latitude", required = false) String latitude,
                               @RequestParam(value = "longitude", required = false) String longitude,
                               @RequestParam(value = "name", required = false) String name,
-                              @RequestParam(value = "restaurant_category_ids", required = false) Long[] categoryIds) {
+                              @RequestParam(value = "restaurant_category_ids", required = true) Long[] categoryIds) {
 
 
         Map<String, Object> params = Maps.newHashMap();
@@ -114,6 +114,7 @@ public class ShopController extends BaseController {
             return Rets.success(mongoRepository.queryPage(page, Shop.class, params));
         } else {
             //查询指定经纬度范围内的餐厅
+//            System.out.println(categoryIds.toString());
             if (categoryIds != null && categoryIds.length > 0) {
                 System.out.println(categoryIds[0]);
                 Map map = (Map) mongoRepository.findSubOne(categoryIds[0], "categories");

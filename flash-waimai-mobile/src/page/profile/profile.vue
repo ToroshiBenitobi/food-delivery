@@ -31,15 +31,15 @@
             <section class="info-data">
                 <ul class="clear">
                     <router-link to="/balance" tag="li" class="info-data-link">
-                        <span class="info-data-top"><b>{{parseInt(balance).toFixed(2)}}</b>元</span>
+                        <span class="info-data-top"><b>{{ balance ? parseInt(balance).toFixed(2) : parseInt(0.00).toFixed(2) }}</b>元</span>
                         <span class="info-data-bottom">我的余额</span>
                     </router-link>
                     <router-link to="/benefit" tag="li" class="info-data-link">
-                        <span class="info-data-top"><b>{{count}}</b>个</span>
+                        <span class="info-data-top"><b>{{ count ? count : 0 }}</b>个</span>
                         <span class="info-data-bottom">我的优惠</span>
                     </router-link>
                     <router-link to="/points" tag="li" class="info-data-link">
-                        <span class="info-data-top"><b>{{pointNumber}}</b>分</span>
+                        <span class="info-data-top"><b>{{ pointNumber ? pointNumber : 0 }}</b>分</span>
                         <span class="info-data-bottom">我的积分</span>
                     </router-link>
                 </ul>

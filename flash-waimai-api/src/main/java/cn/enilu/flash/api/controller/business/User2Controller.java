@@ -61,7 +61,24 @@ public class User2Controller extends BaseController {
 
     @RequestMapping(method = RequestMethod.GET)
     public Object getUser(@RequestParam("user_id") Long userId) {
-        return Rets.success(mongoRepository.findOne(FrontUser.class, "user_id", userId));
+        FrontUser frontUser = mongoRepository.findOne(FrontUser.class, "user_id", userId);
+        FrontUserInfo userInfo = mongoRepository.findOne(FrontUserInfo.class, Maps.newHashMap("user_id", userId));
+        Object result = Mapl.merge(frontUser, userInfo);
+        return Rets.success(result);
+//        Object ret = getSession("currentUser");
+//        if (ret == null) {
+//            String token = getRequest().getParameter("token");
+//            logger.info("token:{}", token);
+//            if (StringUtils.isNotEmpty(token)) {
+//                logger.info("userId:{}", userId);
+//                FrontUser frontUser = mongoRepository.findOne(FrontUser.class, "user_id", userId);
+//                FrontUserInfo userInfo = mongoRepository.findOne(FrontUserInfo.class, Maps.newHashMap("user_id", userId));
+//                Object result = Mapl.merge(frontUser, userInfo);
+//                return result;
+//            }
+//        }
+//        logger.error("获取用户信息失败");
+//        return null;
     }
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)

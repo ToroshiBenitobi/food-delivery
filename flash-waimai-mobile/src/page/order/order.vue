@@ -91,9 +91,17 @@
       //初始化获取信息
       async initData() {
         if (this.userInfo && this.userInfo.user_id) {
-          let response = await getOrderList(this.userInfo.user_id, this.offset);
-          let res = response.records
-          this.orderList = [...res];
+          let response = await getOrderList(this.userInfo.user_id, this.offset)
+          let res1 = await fetch('/bos/v2/users/' + this.userInfo.user_id + '/orders' +  '?limit=50&offset=0')
+          console.log('/bos/v1/users/' + this.userInfo.user_id + '/orders/' + this.offset + '/snapshot')
+          console.log(res1)
+          const json = await res1.json()
+          console.log(json)
+          let res = json.data.records
+        
+          this.orderList = res
+          // this.orderList = [...res];
+          console.log(this.orderList)
           this.hideLoading();
         } else {
           this.hideLoading();

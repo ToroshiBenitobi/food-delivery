@@ -38,6 +38,9 @@ public class RestaurantController extends BaseController {
         System.out.println(longitude);
         System.out.println(latitude);
         System.out.println(params);
+        System.out.println(params);
+        System.out.println(params);
+        System.out.println(params);
         GeoResults<Map> geoResults = mongoRepository.near(Double.valueOf(longitude), Double.valueOf(latitude),
                 "shops", params);
         System.out.println(geoResults.getContent().size());

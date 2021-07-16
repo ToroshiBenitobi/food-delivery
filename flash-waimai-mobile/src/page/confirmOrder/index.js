@@ -34,6 +34,13 @@ export default {
     console.log('shopCart',this.shopCart)
   },
   mounted(){
+    console.log('mounted')
+    console.log(this.geohash)
+    if (!this.geohash) {
+      console.log(12312312321)
+      console.log(this.$route.params.geohash)
+      this.geohash = '31.23037,121.4737'
+    }
     if (this.geohash) {
       this.initData();
       this.SAVE_GEOHASH(this.geohash);
@@ -74,9 +81,12 @@ export default {
     ]),
     //初始化数据
     async initData(){
+      console.log('test',1)
       let newArr = new Array;
       console.log('shopCart',this.shopCart)
+      console.log(Object.values(this.shopCart))
       Object.values(this.shopCart).forEach(categoryItem => {
+        console.log(categoryItem)
         console.log(1)
         Object.values(categoryItem).forEach(itemValue=> {
           console.log(2)
@@ -101,6 +111,7 @@ export default {
       console.log(5)
       //检验订单是否满足条件
 
+      
       this.checkoutData = await checkout(this.geohash, [newArr], this.shopId);
       console.log(7)
       this.SAVE_CART_ID_SIG({cart_id: this.checkoutData.cart.id, sig:  this.checkoutData.sig})
@@ -151,6 +162,7 @@ export default {
         return
       }
       //保存订单
+      console.log('SAVE_ORDER_PARAM')
       this.SAVE_ORDER_PARAM({
         user_id: this.userInfo.user_id,
         cart_id: this.checkoutData.cart.id,
