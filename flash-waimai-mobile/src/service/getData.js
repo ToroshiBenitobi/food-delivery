@@ -300,6 +300,16 @@ export const placeOrders = (user_id, cart_id, address_id, description, entities,
 
 
 /**
+ * 添加评价
+ */
+
+ export const postRating = (restaurant_id, username, rating_star, rating_text) => fetch('/ugc/v2/restaurants/' + restaurant_id + '/ratings/ratings', {
+  rating_star,
+  rating_text,
+  username,
+}, 'POST');
+
+/**
  * 重新发送订单验证码
  */
 

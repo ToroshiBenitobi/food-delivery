@@ -299,8 +299,10 @@ export default {
             this.ratingTageIndex = index;
             this.ratingOffset = 0;
             this.ratingTagName = name;
-            let res = await getRatingList(this.shopId, this.ratingOffset, name);
-            this.ratingList = [...res];
+            let res = await getRatingList(this.shopId, this.ratingOffset, name)
+            console.log(res)
+            const json = await res.json()
+            this.ratingList = [json];
             this.$nextTick(() => {
                 this.ratingScroll.refresh();
             })
