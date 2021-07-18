@@ -13,4 +13,5 @@ public interface Cache {
      */
     String CONSTANT = "CONSTANT";
     String APPLICATION = "APPLICATION";
+    String USER = "USER";
 }

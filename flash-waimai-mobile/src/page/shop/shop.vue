@@ -231,7 +231,7 @@
                             </ul>
                             <ul class="rating_list_ul">
                                 <li v-for="(item, index) in ratingList" :key="index" class="rating_list_li">
-                                    <img :src="getImgPath(item.avatar)" class="user_avatar">
+                                    <img :src="imgBaseUrl + item.avatar" class="user_avatar">
                                     <section class="rating_list_details">
                                         <header>
                                             <section class="username_star">

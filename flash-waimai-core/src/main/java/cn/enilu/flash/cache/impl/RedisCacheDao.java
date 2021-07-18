@@ -1,21 +1,19 @@
 package cn.enilu.flash.cache.impl;
 
+import cn.enilu.flash.bean.constant.cache.CacheKey;
 import cn.enilu.flash.cache.CacheDao;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
 
-/**
- * EhcacheDao
- *
- *@Author enilu
- * @version 2018/9/12 0012
- */
+
 @Component
-public class EhcacheDao implements CacheDao {
+@Cacheable(unless="#result == null")
+public class RedisCacheDao implements CacheDao {
     //缓存常量，永不过期
     public static  final String CONSTANT = "CONSTANT";
     public static  final String SESSION = "SESSION";
@@ -54,16 +52,19 @@ public class EhcacheDao implements CacheDao {
     }
 
     @Override
+    @Cacheable(unless="#result == null")
     public String get(Serializable key) {
         return cacheManager.getCache(CONSTANT).get(String.valueOf(key),String.class);
     }
 
     @Override
+    @Cacheable(unless="#result == null")
     public void del(Serializable key) {
         cacheManager.getCache(CONSTANT).put(String.valueOf(key),null);
     }
 
     @Override
+    @Cacheable(unless="#result == null")
     public void hdel(Serializable key, Serializable k) {
         cacheManager.getCache(String.valueOf(key)).put(String.valueOf(k),null);
     }

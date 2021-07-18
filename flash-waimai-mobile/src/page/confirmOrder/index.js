@@ -39,7 +39,7 @@ export default {
     if (!this.geohash) {
       console.log(12312312321)
       console.log(this.$route.params.geohash)
-      this.geohash = '31.23037,121.4737'
+      this.geohash = '28.139991,112.99197'
     }
     if (this.geohash) {
       this.initData();

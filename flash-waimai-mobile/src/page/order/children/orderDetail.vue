@@ -103,28 +103,43 @@
         <section class="order_detail_style">
           <header>订单评价</header>
           <form action="" v-on:submit.prevent>
-            <section class="ui-padding-block">
-              <div class="input-new">
-                <input
-                  type="text"
-                  placeholder="评价"
-                  v-model="rating_star"
-                />
-              </div>
-              <div class="input-new">
-                <input
-                  type="text"
-                  placeholder="信息"
-                  v-model="rating_text"
-                />
+            <section class="item_style">
+              <p class="item_left">订单星级：</p>
+              <section class="ui-padding-block">
+                <div class="item_right">
+                  <div class="input-new">
+                    <input
+                      type="text"
+                      placeholder="评价"
+                      class="rating_input"
+                      v-model="rating_star"
+                    />
+                  </div>
+                </div>
+              </section>
+            </section>
+            <section class="item_style">
+              <p class="item_left">订单评价：</p>
+              <div class="item_right">
+                <section class="ui-padding-block">
+                  <div class="input-new">
+                    <input
+                      type="text"
+                      placeholder="信息"
+                      class="rating_input"
+                      v-model="rating_text"
+                    />
+                  </div>
+                </section>
               </div>
             </section>
-            <section class="addbutton">
-              <button
-                @click.prevent="submitRating"
-              >
-                新增评价
-              </button>
+            <section class="item_style">
+              <p class="item_left">
+                <button @click.prevent="submitRating" class="rating_submit">
+                  新增评价
+                </button>
+              </p>
+              <div class="item_right"></div>
             </section>
           </form>
         </section>
@@ -186,17 +201,12 @@ export default {
       }
     },
     async submitRating() {
-        console.log('sa')
       let res = await postRating(
         this.orderDetail.restaurant_id,
         this.userInfo.username,
         this.rating_star,
         this.rating_text
       );
-      if (res.message) {
-        this.showAlert = true;
-        this.alertText = res.message;
-      }
       this.$router.go(-1);
     },
   },
@@ -358,5 +368,30 @@ export default {
 .loading-enter,
 .loading-leave-active {
   opacity: 0;
+}
+
+input {
+  height: 1.5rem;
+}
+
+.rating_input {
+  flex: 4;
+  border: 0.025rem solid $bc;
+  @include sc(0.65rem, #333);
+  border-radius: 0.125rem;
+  background-color: #f2f2f2;
+  font-weight: bold;
+  padding: 0 0.25rem;
+}
+
+.rating_submit {
+  flex: 1;
+  border: 0.025rem solid $blue;
+  margin-left: 0.2rem;
+  @include sc(0.65rem, #fff);
+  border-radius: 0.125rem;
+  background-color: $blue;
+  font-weight: bold;
+  padding: 0 0.25rem;
 }
 </style>

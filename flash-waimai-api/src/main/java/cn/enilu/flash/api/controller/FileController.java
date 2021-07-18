@@ -136,6 +136,8 @@ public class FileController extends BaseController {
             fileInfo = fileService.get(idFile);
         }else if(StringUtils.isNotEmpty(fileName)){
             fileInfo = fileService.getByName(fileName);
+        }else {
+            fileInfo = fileService.getByName("404.png");
         }
 
         FileInputStream fis = null;
@@ -153,11 +155,14 @@ public class FileController extends BaseController {
             if(idFile!=null) {
 
                 logger.error("文件不存在 " + idFile);
+                e.printStackTrace();
             }else if(StringUtils.isNotEmpty(fileName)){
                 logger.error("文件不存在 " + fileName);
 //                logger.error("文件不存在" + "image/"+fileInfo.getRealFileName().split("\\.")[1],e.getMessage());
+                e.printStackTrace();
             } else {
                 logger.error("文件无名字");
+                e.printStackTrace();
             }
         } finally {
             if (fis != null) {

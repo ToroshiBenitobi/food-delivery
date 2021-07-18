@@ -19,13 +19,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service
-public class FileService extends BaseService<FileInfo,Long,FileInfoRepository> {
+public class FileService extends BaseService<FileInfo, Long, FileInfoRepository> {
     @Autowired
     private ConfigCache configCache;
     @Autowired
@@ -33,40 +30,42 @@ public class FileService extends BaseService<FileInfo,Long,FileInfoRepository> {
 
     /**
      * 文件上传
+     *
      * @param multipartFile
      * @return
      */
-    public FileInfo upload(MultipartFile multipartFile){
+    public FileInfo upload(MultipartFile multipartFile) {
         String uuid = UUID.randomUUID().toString();
-        String realFileName =   uuid +"."+ multipartFile.getOriginalFilename().split("\\.")[1];
+        String realFileName = uuid + "." + multipartFile.getOriginalFilename().split("\\.")[1];
         try {
 
-            File file = new File(configCache.get(ConfigKeyEnum.SYSTEM_FILE_UPLOAD_PATH.getValue()) + File.separator+realFileName);
+            File file = new File(configCache.get(ConfigKeyEnum.SYSTEM_FILE_UPLOAD_PATH.getValue()) + File.separator + realFileName);
             if (!file.getParentFile().exists()) {
                 file.getParentFile().mkdirs();
             }
             multipartFile.transferTo(file);
-            return save(multipartFile.getOriginalFilename(),file);
+            return save(multipartFile.getOriginalFilename(), file);
         } catch (Exception e) {
             e.printStackTrace();
-             return null;
+            return null;
         }
     }
 
     /**
      * 根据模板创建excel文件
+     *
      * @param template excel模板
      * @param fileName 导出的文件名称
-     * @param data  excel中填充的数据
+     * @param data     excel中填充的数据
      * @return
      */
-    public FileInfo createExcel(String template, String fileName, Map<String, Object> data){
+    public FileInfo createExcel(String template, String fileName, Map<String, Object> data) {
         FileOutputStream outputStream = null;
-        File file = new File(configCache.get(ConfigKeyEnum.SYSTEM_FILE_UPLOAD_PATH.getValue()) + File.separator+UUID.randomUUID().toString()+".xlsx");
+        File file = new File(configCache.get(ConfigKeyEnum.SYSTEM_FILE_UPLOAD_PATH.getValue()) + File.separator + UUID.randomUUID().toString() + ".xlsx");
         try {
 
             // 定义输出类型
-            outputStream =new FileOutputStream(file);
+            outputStream = new FileOutputStream(file);
 
             JxlsHelper jxlsHelper = JxlsHelper.getInstance();
             String templateFile = getClass().getClassLoader().getResource(template).getPath();
@@ -90,19 +89,21 @@ public class FileService extends BaseService<FileInfo,Long,FileInfoRepository> {
                 outputStream.flush();
                 outputStream.close();
             } catch (Exception e) {
-            e.printStackTrace();
+                e.printStackTrace();
             }
 
         }
-        return save(fileName,file);
+        return save(fileName, file);
     }
+
     /**
      * 创建文件
+     *
      * @param originalFileName
      * @param file
      * @return
      */
-    public FileInfo save(String originalFileName,File file){
+    public FileInfo save(String originalFileName, File file) {
         try {
             FileInfo fileInfo = new FileInfo();
             fileInfo.setCreateTime(new Date());
@@ -118,16 +119,22 @@ public class FileService extends BaseService<FileInfo,Long,FileInfoRepository> {
     }
 
     @Override
-    @Cacheable(value = Cache.APPLICATION, key = "'" + CacheKey.FILE_INFO + "'+#id")
-    public FileInfo get(Long id){
+    @Cacheable(value = Cache.APPLICATION, key = "'" + CacheKey.FILE_INFO + "'+#id", unless = "#result == null")
+    public FileInfo get(Long id) {
         FileInfo fileInfo = fileInfoRepository.getOne(id);
-        fileInfo.setAblatePath(configCache.get(ConfigKeyEnum.SYSTEM_FILE_UPLOAD_PATH.getValue()) + File.separator+fileInfo.getRealFileName());
+        fileInfo.setAblatePath(configCache.get(ConfigKeyEnum.SYSTEM_FILE_UPLOAD_PATH.getValue()) + File.separator + fileInfo.getRealFileName());
         return fileInfo;
     }
-    @Cacheable(value = Cache.APPLICATION, key = "'" + CacheKey.FILE_INFO + "'+#fileName")
+
+    @Cacheable(value = Cache.APPLICATION, key = "'" + CacheKey.FILE_INFO + "'+#fileName", unless = "#result == null")
     public FileInfo getByName(String fileName) {
-        FileInfo fileInfo = fileInfoRepository.findByRealFileName(fileName);
-        if(fileInfo!=null) {
+        FileInfo fileInfo = null;
+        List<FileInfo> fileInfos = fileInfoRepository.findAllByOriginalFileName(fileName);
+        if (fileInfos.size() != 0) {
+            fileInfo = fileInfos.get(0);
+            fileInfo.setAblatePath(configCache.get(ConfigKeyEnum.SYSTEM_FILE_UPLOAD_PATH.getValue()) + File.separator + fileInfo.getRealFileName());
+        } else {
+            fileInfo = fileInfoRepository.findAllByOriginalFileName("404.png").get(0);
             fileInfo.setAblatePath(configCache.get(ConfigKeyEnum.SYSTEM_FILE_UPLOAD_PATH.getValue()) + File.separator + fileInfo.getRealFileName());
         }
         return fileInfo;

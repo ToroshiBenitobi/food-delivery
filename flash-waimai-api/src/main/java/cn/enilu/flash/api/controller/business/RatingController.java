@@ -46,7 +46,7 @@ public class RatingController extends BaseController {
     }
 
     @RequestMapping(value = "/ugc/v2/restaurants/{restaurant_id}/ratings/ratings", method = RequestMethod.POST)
-    public void addRatings(@RequestParam("username") String username,
+    public Object addRatings(@RequestParam("username") String username,
                            @PathVariable("restaurant_id") Integer restaurantId,
                            @RequestParam("rating_star") Integer ratingStar,
                            @RequestParam("rating_text") String ratingText) {
@@ -59,10 +59,11 @@ public class RatingController extends BaseController {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         String date = df.format(new Date());
         rating.put("rated_at", date);
-        FrontUserInfo frontUserInfo = mongoRepository.findOne(FrontUserInfo.class, "username", userName);
+        FrontUserInfo frontUserInfo = mongoRepository.findOne(FrontUserInfo.class, "username", username);
         rating.put("avatar", frontUserInfo.getAvatar());
         ((ArrayList) ratings.get("ratings")).add(rating);
         mongoRepository.update(Integer.toUnsignedLong((Integer) ratings.get("restaurant_id")), "ratings", ratings);
         mongoRepository.save(ratings, "ratings");
+        return Rets.success();
     }
 }
